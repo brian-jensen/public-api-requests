@@ -1,10 +1,10 @@
 /* jshint esversion: 6 */
 
 // Fetches 12 random user objects from randomuser.me and passes them to directory()
-fetch('https://randomuser.me/api/?results=12&nat=us')
+fetch('https://randomuser.me/api/?results=12&nat=us&exc=login,gender,registered,id')
   .then(response => response.json())
   .then(data => directory(data.results))
-  .catch(error => console.log('Error fetching data:', error)
+  .catch(error => console.error('Error fetching data:', error)
 );
 
 document.querySelector('body').innerHTML += `<div class="modal-container"></div>`;
@@ -17,7 +17,6 @@ const directory = employees => {
   const gallery = document.querySelector('#gallery');
   for (let index in employees) {
     let employee = employees[index];
-    let _state = abbrState(employee.location.state);
     
     gallery.innerHTML += `
       <div class="card">
@@ -27,7 +26,7 @@ const directory = employees => {
         <div class="card-info-container">
           <h3 id="name" class="card-name cap">${employee.name.first} ${employee.name.last}</h3>
           <p class="card-text">${employee.email}</p>
-          <p class="card-text cap">${employee.location.city}, ${_state}</p>
+          <p class="card-text cap">${employee.location.city}</p>
         </div>
       </div>
     `;
@@ -58,10 +57,9 @@ const modal = (employees, employee, index) => {
         <img class="modal-img" src="${employee.picture.large}" alt="${employee.name.first}'s profile picture">
         <h3 id="name" class="modal-name cap">${employee.name.first} ${employee.name.last}</h3>
         <p class="modal-text">${employee.email}</p>
-        <p class="modal-text cap">${employee.location.city}</p>
-        <hr>
+        <p class="modal-text cap">${employee.location.city}</p><hr>
         <p class="modal-text">${employee.phone}</p>
-        <p class="modal-text cap">${employee.location.street}, ${employee.location.city}, ${_state} ${employee.location.postcode}</p>
+        <p class="modal-text cap">${employee.location.street}, ${_state} ${employee.location.postcode}</p>
         <p class="modal-text">Birthday: ${dob}</p>
       </div>
     </div>
@@ -105,11 +103,10 @@ const handleSearch = () => {
 };
 
 const search = document.querySelector('#search-input');
-const submit = document.querySelector('#search-submit');
 // Listens for user to type characters in a name to filter search results.
 search.addEventListener('keyup', handleSearch);
 // Listens for user to click search submit button to filter search results.
-submit.addEventListener('click', event => {
+document.querySelector('#search-submit').addEventListener('click', event => {
   event.preventDefault();
   handleSearch();
 });
